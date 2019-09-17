@@ -7,6 +7,8 @@
     "example": "example"
   },
   "dependencies": {
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
     "mysql": "github:mysqljs/mysql",
     "request": "^2.88.0",
     "xml2js": "^0.4.22"
