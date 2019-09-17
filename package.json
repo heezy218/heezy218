@@ -1,0 +1,19 @@
+{
+  "name": "javascript_basic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "callback.js",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "request": "^2.88.0",
+    "xml2js": "^0.4.22"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
