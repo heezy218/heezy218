@@ -73,6 +73,7 @@
                         <div class="top-20 bottom-20">
                             <a href="#" data-menu="menu-signin" class="center-text font-11 color-gray2-dark">Already Registered? Sign In Here.</a>
                         </div>
+                        <button type="button" id="authBtn" class="button button-full button-m shadow-large button-round-small bg-green1-dark top-10 bottom-0">계좌인증받기</button>
                         <div class="clear"></div>
                         <a href="#" class="button button-full button-m shadow-large button-round-small bg-green1-dark top-10 bottom-0">LOGIN</a>
                     </div>
@@ -211,4 +212,25 @@
 <script type="text/javascript" src="scripts/jquery.js"></script>
 <script type="text/javascript" src="scripts/plugins.js"></script>
 <script type="text/javascript" src="scripts/custom.js"></script>
+<script>
+ $("#authBtn").click(function(){
+            var qs = "response_type=code&" +
+            "client_id=l7xx3d9f8f7f5978488da2fb458cb6e2411b&" +
+            "redirect_uri=http://localhost:3000/authResult&" +
+            "scope=login inquiry transfer&" +
+            "invoke_type=ajax"
+            $.ajax({
+                url:'https://testapi.open-platform.or.kr/oauth/2.0/authorize2?'+qs,
+                type : 'GET',
+                success:function(data){
+                    console.log(data.location);
+                    window.name ="parents";
+                console.log(data.location);
+                var tmpwindow = window.open("about:blank");
+                tmpwindow.location = data.location;//추가
+
+                }
+            })
+        })
+</script>
 </body>

@@ -1,0 +1,4 @@
+git bash 로그인
+sourcetree 커밋
+node .\express.js 로컬 호스트 리스닝
+http://localhost:3000
