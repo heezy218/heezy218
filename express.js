@@ -4,6 +4,7 @@
 
 var express = require("express"),
 app = express();
+var request = require("request");
 
 app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs');
@@ -26,7 +27,7 @@ app.get("/signup", function(request, response){
 });
 
 app.get("/authResult", function(req, res){
-	var authResult = req.query.code;
+	var authCode = req.query.code;
 	console.log(authCode);
 	option = {
 		url : "https://testapi.open-platform.or.kr/oauth/2.0/token",
@@ -43,7 +44,15 @@ app.get("/authResult", function(req, res){
 	}
 	request(option, function(error,response, body){
 		console.log(body);
-		res.json(body);
+		if(error){
+			console.error(error);
+			throw error;
+		}
+		else{
+			var accessTokenObj = JSON.parse(body);
+			console.log(accessTokenObj);
+			res.render('resultChild', {data : accessTokenObj});
+		}
 	})
 });
 
@@ -58,6 +67,32 @@ app.get("/sayHello", function (request, response) {
 	var user_name = request.query.user_name;
 	response.end("Hello " + user_name + "!");
 });
+
+
+app.post('/signup', function(req, res){
+	var userEmail = req.body.userEmail;
+	var userPassword = req.body.userPassword;
+	var accessToken = req.body.accessToken;
+	var refreshToken = req.body.refreshToken;
+	var useseqnum = req.body.useseqnum;
+
+	var sql = "INSERT INTO 'new_schema'.'user' {'user_id', 'user_password', 'phone', 'accessToken', 'refreshToekn', 'useseqnum'} " +
+	" VALUES (?,?,?,?,?,?,)";
+	RTCPeerConnection.query(sql,[userEmail,
+		userPassword,
+		"010",
+		accessToken,
+		refreshToken,
+		useseqnum ], function(err, result){
+		if(err){
+			console.error(err);
+			throw err;
+		}
+		else {
+
+		}
+	})
+})
 
 app.listen(port);
 

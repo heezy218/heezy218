@@ -66,10 +66,22 @@
                         </div>          
                         <div class="input-style has-icon input-style-1 input-required">
                             <i class="input-icon fa fa-lock font-11"></i>
-                            <span>Password</span>
+                            <span>accessToken</span>
                             <em>(required)</em>
-                            <input type="password" placeholder="Confirm your Password">
-                        </div>         
+                            <input type="text" id="accessToken" placeholder="accessToken">
+                        </div>
+                        <div class="input-style has-icon input-style-1 input-required">
+                            <i class="input-icon fa fa-lock font-11"></i>
+                            <span>refreshToken</span>
+                            <em>(required)</em>
+                            <input type="text" id="refreshToken" placeholder="refreshToken your Password">
+                        </div>
+                            <div class="input-style has-icon input-style-1 input-required">
+                                <i class="input-icon fa fa-lock font-11"></i>
+                                <span>useseqnum</span>
+                                <em>(required)</em>
+                                <input type="text" id="useseqnum" placeholder="useseqnum">
+                        </div>       
                         <div class="top-20 bottom-20">
                             <a href="#" data-menu="menu-signin" class="center-text font-11 color-gray2-dark">Already Registered? Sign In Here.</a>
                         </div>
@@ -223,11 +235,10 @@
                 url:'https://testapi.open-platform.or.kr/oauth/2.0/authorize2?'+qs,
                 type : 'GET',
                 success:function(data){
-                    console.log(data.location);
                     window.name ="parents";
-                console.log(data.location);
-                var tmpwindow = window.open("about:blank");
-                tmpwindow.location = data.location;//추가
+                    console.log(data.location);
+                    var tmpwindow = window.open("about:blank");
+                    tmpwindow.location = data.location;//추가
 
                 }
             })
