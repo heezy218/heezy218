@@ -17,8 +17,12 @@ app.get("/", function (request, response) {
 	response.render('main');
 });
 
-app.get("/design", function(requset, response){
+app.get("/design", function(request, response){
 	response.render('design');
+});
+
+app.get("/signup", function(request, response){
+	response.render('signup');
 });
 
 app.get('/sendUserData', function(req, res){
