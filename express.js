@@ -136,6 +136,14 @@ app.get("/sayHello", function (request, response) {
 	response.end("Hello " + user_name + "!");
 });
 
+app.get('/qrcode', function(req, res){
+    res.render('qrcode');
+})
+
+app.get('/qr', function(req, res){
+    res.render('qrcodeReader');
+})
+
 app.get('/login', function(req, res){
     res.render('login');
 });
@@ -167,6 +175,44 @@ app.post('/balance', auth, function(req, res){
         });
     })
 })
+
+
+app.post('/transactionList', auth, function(req, res) {
+    var finseqnum = req.body.finNum;
+    var selectUserSql = "SELECT * FROM fintech.user WHERE user_id = ?";
+    connection.query(selectUserSql, [req.decoded.userId], function(err, result){
+        var accessToken = result[0].accessToken;
+        var qs = "?fintech_use_num=" + finseqnum +
+        "&inquiry_type=A" +
+        "&from_date=20190101" + //
+        "&to_date=20190101" +   //
+        "&sort_order=D" +
+        "&page_index=0" +  //키 컬럼      
+        "&tran_dtime=20190918174737"
+        option = {
+            url : "https://testapi.open-platform.or.kr/v1.0/account/transaction_list"+qs,   //
+            method : "GET",
+            headers : {
+                "Authorization" : "Bearer " + accessToken
+            },
+        }
+        request(option, function (error, response, body) {
+            console.log(body);
+            if(error){
+                console.error(error);
+                throw error;
+            }
+            else {
+                console.log("으ㅏㄹㄴㅇㄻ너알먼이러만ㅇㄱ놈니");
+                console.log(finseqnum);
+                console.log(body);
+                var resultObj = JSON.parse(body);
+                res.json(resultObj);
+            }
+        });
+    })
+})
+
 
 app.post('/login', function (req, res) {
     var userEmail = req.body.email;

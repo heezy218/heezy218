@@ -64,5 +64,32 @@
             $("#ammount").html(data.balance_amt+'');
         }
     })
+    $.ajax({
+        url: 'http://localhost:3000/transactionList',
+        type: 'POST',
+        headers: {
+            'x-access-token': jwtToken
+        },
+        data: {
+            finNum: qs.fin_use_num
+        },
+        success: function (data) {
+            console.log(data);
+            var resultList = data.res_list;
+            for (let i = 0; i < resultList.length; i++) {
+                const element = resultList[i];
+                $("#transactionTable").append(
+                    '<tr>' +
+                    '<td>'+element.tran_date+'</td>' +
+                    '<td>'+element.tran_time+'</td>' +
+                    '<td>'+element.inout_type+'</td>' +
+                    '<td>'+element.tran_type+'</td>' +
+                    '<td>'+element.print_content+'</td>' +
+                    '<td>'+element.tran_amt+'</td>' +
+                    '</tr>'
+                )
+            }
+        }
+    })
 </script>
 <% include ./hf/footer.ejs %>
