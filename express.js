@@ -3,6 +3,8 @@
 
 var express = require("express");
 var jwt = require("jsonwebtoken");
+var auth = require('./auth');
+
 app = express();
 var request = require('request');
 var mysql      = require('mysql');
@@ -37,6 +39,49 @@ app.get("/design", function (request, response) {
 app.get("/signup", function(request, response){
 	response.render('signup');
 });
+
+app.get("/main", function(request, response){
+    response.render('main');
+});
+
+app.post('/getUser', auth, function(req, res){
+    console.log(req.decoded);
+    var selectUserSql = "SELECT * FROM fintech.user WHERE user_id = ?";
+    var userseqnum = "";
+    var userAccessToken = "";
+    connection.query(selectUserSql, [req.decoded.userId], function(err, result){
+        if(err){
+            console.error(err);
+            throw err;
+        }
+        else {
+            console.log(result);
+            userseqnum = result[0].userseqnum;
+            userAccessToken = result[0].accessToken;
+            console.log("parameter : ", userseqnum, userAccessToken);
+
+            var qs = "?user_seq_no=" + userseqnum
+            option = {
+                url : "https://testapi.open-platform.or.kr/user/me"+qs,
+                method : "GET",
+                headers : {
+                    "Authorization" : "Bearer "+ userAccessToken
+                },
+            }
+            request(option, function (error, response, body) {
+                console.log(body);
+                if(error){
+                    console.error(error);
+                    throw error;
+                }
+                else {
+                    var responseObj = JSON.parse(body);
+                    res.json(responseObj);
+                }
+            });
+        }
+    })
+})
 
 app.get("/authResult", function(req, res){
 	var authCode = req.query.code;
@@ -91,7 +136,25 @@ app.get('/login', function(req, res){
 });
 
 app.post('/balance', function(req, res){
-    
+    var qs = "?fintech_use_num=199158970057879805326728&tran_dtime=20190918174737"
+    option={
+        url : "https://testapi.open-platform.or.kr/v1.0/account/balance"+qs,
+        method : "GET",
+        headers : {
+            "Authorization" : "Bearer 66a7f53e-e64a-4e78-953d-7458a8eb6326"
+        },
+    }
+    request (option, function (error, response, body){
+        console.log(body);
+        if(error){
+            console.error(error);
+            throw err;
+        }
+        else{
+            console.log(body);
+            res.json('??');
+        }
+    });
 })
 
 app.post('/login', function (req, res) {
@@ -109,7 +172,8 @@ app.post('/login', function (req, res) {
             jwt.sign(
                 {
                     userName : results[0].name,
-                    userId : results[0].user_id
+                    userId : results[0].user_id,
+                    comment : "안녕하세요"
                 },
                 "abcdefg123456",
                 {
