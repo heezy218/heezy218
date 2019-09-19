@@ -41,10 +41,10 @@
             <div class="caption-center">
 
                 <div class="content-boxed left-40 right-40">
-                    <div class="content top-10 bottom-20">
-                        <h1 class="center-text uppercase ultrabold fa-3x">Register</h1>
-                        <p class="center-text color-highlight font-11 under-heading bottom-30">
-                            Don't have an account? Register here.
+                    <div class="content top-20 bottom-40">
+                        <h1 class="center-text uppercase ultrabold fa-3x">LOGIN</h1>
+                        <p class="center-text font-11 under-heading bottom-30 color-highlight">
+                            Let's get you logged in
                         </p>
                         <div class="input-style has-icon input-style-1 input-required">
                             <i class="input-icon fa fa-user font-11"></i>
@@ -53,48 +53,20 @@
                             <input type="name" id="userId" placeholder="Username">
                         </div> 
                         <div class="input-style has-icon input-style-1 input-required">
-                            <i class="input-icon fa fa-at"></i>
-                            <span>Email</span>
-                            <em>(required)</em>
-                            <input type="email" id="userEmail" placeholder="Email">
-                        </div>         
-                        <div class="input-style has-icon input-style-1 input-required">
                             <i class="input-icon fa fa-lock font-11"></i>
                             <span>Password</span>
                             <em>(required)</em>
-                            <input type="password" id="userPassword" placeholder="Choose a Password">
+                            <input type="password" id="password" placeholder="Password">
                         </div>          
-                        <div class="input-style has-icon input-style-1 input-required">
-                            <i class="input-icon fa fa-lock font-11"></i>
-                            <span>accessToken</span>
-                            <em>(required)</em>
-                            <input type="text" id="accessToken" placeholder="accessToken">
-                        </div>
-                        <div class="input-style has-icon input-style-1 input-required">
-                            <i class="input-icon fa fa-lock font-11"></i>
-                            <span>refreshToken</span>
-                            <em>(required)</em>
-                            <input type="text" id="refreshToken" placeholder="refreshToken your Password">
-                        </div>
-                            <div class="input-style has-icon input-style-1 input-required">
-                                <i class="input-icon fa fa-lock font-11"></i>
-                                <span>useseqnum</span>
-                                <em>(required)</em>
-                                <input type="text" id="useseqnum" placeholder="useseqnum">
-                        </div>         
-                        <div class="top-20 bottom-20">
-                            <a href="#" data-menu="menu-signin" class="center-text font-11 color-gray2-dark">Already Registered? Sign In Here.</a>
-                        </div>
-                        <button type="button" id="authBtn" class="button button-full button-m shadow-large button-round-small bg-green1-dark top-10 bottom-0">계좌인증받기</button>
                         <div class="clear"></div>
-                        <button type="button" id="joinBtn" class="button button-full button-m shadow-large button-round-small bg-green1-dark top-10 bottom-0">가입</button>
-
+                        <button type="button" id="loginBtn" class="button button-full button-m shadow-large button-round-small bg-green1-dark top-10 bottom-0">로그인</button>
                     </div>
                 </div>
 
                     
             </div>
         </div>
+        
     </div>
     <!-- Page Content Class Ends Here-->
 
@@ -221,45 +193,25 @@
     <div class="menu-hider"></div>
 </div>
 
+
 <script type="text/javascript" src="scripts/jquery.js"></script>
 <script type="text/javascript" src="scripts/plugins.js"></script>
 <script type="text/javascript" src="scripts/custom.js"></script>
 <script>
-        $("#authBtn").click(function(){
-            var qs = "response_type=code&" +
-            "client_id=l7xx3d9f8f7f5978488da2fb458cb6e2411b&" +
-            "redirect_uri=http://localhost:3000/authResult&" +
-            "scope=login inquiry transfer&" +
-            "invoke_type=ajax"
+        $("#loginBtn").click(function(){
             $.ajax({
-                url:'https://testapi.open-platform.or.kr/oauth/2.0/authorize2?'+qs,
-                type : 'GET',
-                success:function(data){
-                    window.name ="parents";
-                    console.log(data.location);
-                    var tmpwindow = window.open("about:blank");
-                    tmpwindow.location = data.location;//추가
-                }
-            })
-        })
-        $("#joinBtn").click(function(){
-            $.ajax({
-                url:'http://localhost:3000/signup',
+                url:'http://localhost:3000/login',
                 type : 'POST',
                 data : {
                     //데이터 입력\
-                    userEmail : $("#userId").val(),//value,
-                    userPassword : $("#userPassword").val(),//value,
-                    accessToken :$("#accessToken").val(), //value,
-                    refreshToken : $("#refreshToken").val(),//value,
-                    useseqnum :$("#useseqnum").val(), //value,
+                    email : $("#userId").val(),//value,
+                    password : $("#password").val(),//value,
                 },
                 success:function(data){
-                    if(data == '1'){
-                        alert("가입완료");
-                    }
+                    console.log(data);
+                    sessionStorage.setItem('jwtToken', data);
                 }
             })
         });
-</script>    
+</script>
 </body>
