@@ -1,5 +1,6 @@
 //npm install express
 //npm install ejs
+//npm install jwt??제이슨토큰머시기설치
 
 var express = require("express");
 var jwt = require("jsonwebtoken");
@@ -20,7 +21,7 @@ app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
-app.use(express.json());
+app.use(express.json());    //json 토큰 사용
 app.use(express.urlencoded({extended : false}));
 
 var port = process.env.PORT || 3000;
@@ -42,6 +43,10 @@ app.get("/signup", function(request, response){
 
 app.get("/main", function(request, response){
     response.render('main');
+});
+
+app.get("/balance", function(request, response){
+    response.render('balance');
 });
 
 app.post('/getUser', auth, function(req, res){
@@ -135,26 +140,32 @@ app.get('/login', function(req, res){
     res.render('login');
 });
 
-app.post('/balance', function(req, res){
-    var qs = "?fintech_use_num=199158970057879805326728&tran_dtime=20190918174737"
-    option={
-        url : "https://testapi.open-platform.or.kr/v1.0/account/balance"+qs,
-        method : "GET",
-        headers : {
-            "Authorization" : "Bearer 66a7f53e-e64a-4e78-953d-7458a8eb6326"
-        },
-    }
-    request (option, function (error, response, body){
-        console.log(body);
-        if(error){
-            console.error(error);
-            throw err;
+app.post('/balance', auth, function(req, res){
+    var finsenum = req.body.finNum;
+    var selectUserSql = "SELECT * FROM fintech.user WHERE user_id = ?";
+    connection.query(selectUserSql, [req.decoded.userId], function(err, result){
+        var accessToken = result[0].accessToken;
+        var qs = "?fintech_use_num=" + finsenum +"&tran_dtime=20190918174737"
+        option={
+            url : "https://testapi.open-platform.or.kr/v1.0/account/balance"+qs,
+            method : "GET",
+            headers : {
+                "Authorization" : "Bearer " + accessToken
+            },
         }
-        else{
+        request (option, function (error, response, body){
             console.log(body);
-            res.json('??');
-        }
-    });
+            if(error){
+                console.error(error);
+                throw err;
+            }
+            else{
+                console.log(body);
+                var resultObj = JSON.parse(body);
+                res.json(resultObj);
+            }
+        });
+    })
 })
 
 app.post('/login', function (req, res) {
