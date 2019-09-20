@@ -88,6 +88,94 @@ app.post('/getUser', auth, function(req, res){
     })
 })
 
+
+app.post('/withdrawQR', auth, function(req, res){
+    console.log(req.decoded);
+    var selectUserSql = "SELECT * FROM fintech.user WHERE user_id = ?";
+    var userseqnum = "";
+    var userAccessToken = "";
+    connection.query(selectUserSql, [req.decoded.userId], function(err, result){
+        if(err){
+            console.error(err);
+            throw err;
+        }
+        else {
+            userseqnum = result[0].userseqnum;
+            userAccessToken = result[0].accessToken;
+            option = {
+                url : " https://testapi.open-platform.or.kr/v1.0/transfer/withdraw",
+                method : "POST",
+                headers : {
+                    "Authorization" : "Bearer "+ userAccessToken,
+                    "Content-Type" : "application/json"
+                },
+                json : {
+                        "dps_print_content": "널앤서",
+                        "fintech_use_num": "199158970057879805324504",
+                        "tran_amt": "11000",
+                        "tran_dtime": "20190918174737"
+                }
+            }
+            request(option, function (error, response, body) {
+                console.log(body);
+                if(error){
+                    console.error(error);
+                    throw error;
+                }
+                else {
+                    var responseObj = body;
+                    if(responseObj.rsp_code== "A0002" || responseObj.rsp_code== "A0000") {
+                        res.json(1);
+                    }
+                    else{
+                        res.json(2);
+                    }
+                }
+            });
+        }
+    })
+})
+
+app.get("/deposit", function(req, res){
+    res.render('deposit');
+})
+
+app.post("/deposit", function(req, res){
+    var request = require("request");
+    var options = { method: 'POST',
+        url: 'https://testapi.open-platform.or.kr/v1.0/transfer/deposit',
+         headers: 
+         { 'cache-control': 'no-cache',
+            Connection: 'keep-alive',
+           'Content-Length': '316',
+           'Accept-Encoding': 'gzip, deflate',
+           Host: 'testapi.open-platform.or.kr',
+          'Postman-Token': '66842f36-9695-4d01-8c25-590f7912fe45,8780c563-c511-416d-880f-43615f53b4f3',
+          'Cache-Control': 'no-cache',
+          Accept: '*/*',
+          'User-Agent': 'PostmanRuntime/7.17.1',
+          'Content-Type': 'application/json',
+           Authorization: 'Bearer 6957778c-02f8-4963-9ee9-41491d27fbf7' },
+         body: 
+         { wd_pass_phrase: 'NONE',
+           wd_print_content: '환불금액',
+           name_check_option: 'on',
+           req_cnt: '1',
+           req_list: 
+           [ { tran_no: '1',
+                fintech_use_num: '199158970057879805324504',
+                print_content: '쇼핑몰환불',
+                tran_amt: '500' } ],
+           tran_dtime: '20160310101921' },
+         json: true };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);  
+            console.log(body);
+        console.log("안녕????");
+    });
+})
+
 app.get("/authResult", function(req, res){
 	var authCode = req.query.code;
 	console.log(authCode);

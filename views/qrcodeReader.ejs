@@ -6,14 +6,14 @@
     scanner.addListener('scan', function (content) {
         console.log(content)
         $.ajax({
-        url: 'http://localhost:3000/withdrawQR',
-        type: 'POST',
-        headers: {
-            'x-access-token': sessionStorage.getItem('jwtToken')
-        },
-        data: {
-            qrFin : content
-        },
+            url: 'http://localhost:3000/withdrawQR',
+            type: 'POST',
+            headers: {
+                'x-access-token': sessionStorage.getItem('jwtToken')
+            },
+            data: {
+                qrFin : content
+            },
         success: function (data) {
             console.log(data);
             if(data == 1){
